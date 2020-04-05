@@ -1,0 +1,22 @@
+{
+  "name": "hoover",
+  "version": "1.0.0",
+  "description": "a basic hoover game using pixi.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joeqj/Hoover.git"
+  },
+  "author": "Joe <joe@offgrid.team> (https://offgrid.team)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joeqj/Hoover/issues"
+  },
+  "homepage": "https://github.com/joeqj/Hoover#readme",
+  "dependencies": {
+    "pixi.js": "^5.2.1"
+  }
+}
