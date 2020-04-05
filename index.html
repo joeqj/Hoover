@@ -9,13 +9,27 @@
       padding: 0;
     }
     canvas {
-      width: 100vw;
-      height: 100vh;
+      display:block;
+      margin: auto;
+      /* cursor: none !important; */
     }
+    #frame {
+      position: absolute;
+      overflow: hidden;
+      top: 50%;
+      left: 50%;
+      width: 75%;
+      height: 80%;
+      transform: translate(50%, -50%);
+      -webkit-transform: translate(-50%, -50%);
+}
   </style>
 </head>
 <body>
+  <div id="frame"></div>
+
   <script src="node_modules/pixi.js/dist/pixi.min.js"></script>
+  <script src="node_modules/tone/build/Tone.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

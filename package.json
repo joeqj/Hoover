@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/joeqj/Hoover#readme",
   "dependencies": {
-    "pixi.js": "^5.2.1"
+    "pixi.js": "^5.2.1",
+    "tone": "^13.8.25"
   }
 }
