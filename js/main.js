@@ -10,6 +10,7 @@ document.querySelector('#frame').appendChild(app.view);
 // How fast the hoover moves
 const movementSpeed = 0.10;
 
+let hooverStarted = false;
 // Strength of the impulse push between two objects
 const impulsePower = 3;
 
@@ -84,7 +85,7 @@ dust.mass = 3;
 dust.alpha = 1;
 
 // The square you move around
-const hoover = PIXI.Sprite.from('img/hoover.png');
+const hoover = PIXI.Sprite.from('assets/hoover.png');
 hoover.position.set(0, 0);
 hoover.width = 50;
 hoover.height = 134;
@@ -205,45 +206,52 @@ function resize() {
 resize();
 
 // Audio
-const synth = new Tone.AMSynth().toMaster();
-synth.set({
-  "harmonicity" : 3,
-  "detune" : 10,
-  "oscillator" : {
-    "type" : "triangle"
-  } ,
-	"envelope" : {
-		"attack" : 0.3,
-    "sustain": 1,
-    "release": 6
-	},
-  "modulation" : {
-    "type" : "sawtooth"
-  } ,
-  "modulationEnvelope" : {
-    "attack" : 0.5 ,
-    "decay" : 0 ,
-    "sustain" : 1 ,
-    "release" : 6
+const env = new Tone.AmplitudeEnvelope({
+	"attack" : 0.5,
+	"decay" : 0.21,
+	"sustain" : 1,
+	"release" : 6,
+}).toMaster();
+
+var autoFilter = new Tone.AutoFilter({
+  frequency : 2000 ,
+  type : "sine" ,
+  depth : 1 ,
+  baseFrequency : 2000 ,
+  octaves : 2.6 ,
+  filter : {
+    type : "lowpass" ,
+    rolloff : -12 ,
+    Q : 1
   }
-});
+}).connect(env).start();
 
-synth.volume.value = -5;
+const osc1 = new Tone.Oscillator({
+	"type" : "sine",
+	"frequency" : "G4",
+	"volume" : -19,
+}).connect(autoFilter).start();
 
-let started = false;
+const noise = new Tone.Noise({
+  "type" : "pink",
+  "playbackRate" : 1,
+  "volume" : -20
+}).connect(autoFilter).start();
 
 function startHoover() {
   //play a middle 'C' for the duration of an 8th note
-  if (started === false) {
-    synth.triggerAttack("D4");
-    started = true;
+  if (hooverStarted === false) {
+    // synth.triggerAttack("G4");
+    env.triggerAttack();
+    hooverStarted = true;
   }
 }
 
 function stopHoover() {
-  if (started === true) {
-    synth.triggerRelease();
-    started = false;
+  if (hooverStarted === true) {
+    // synth.triggerRelease();
+    env.triggerRelease();
+    hooverStarted = false;
   }
 }
 
