@@ -11,11 +11,18 @@ document.querySelector('#frame').appendChild(app.view);
 const movementSpeed = 0.10;
 
 let hooverStarted = false;
+
 // Strength of the impulse push between two objects
 const impulsePower = 3;
 
-let vCollision;
-let vCollisionNorm;
+let mouseDown = false;
+
+document.addEventListener("mousedown", function() {
+	mouseDown = true;
+});
+document.addEventListener("mouseup", function() {
+	mouseDown = false;
+});
 
 // Test For Hit
 // A basic AABB check between two different squares
@@ -35,7 +42,7 @@ function collisionResponse(object1, object2) {
         return new PIXI.Point(0);
     }
 
-    vCollision = new PIXI.Point(
+    const vCollision = new PIXI.Point(
         object2.x - object1.x,
         object2.y - object1.y,
     );
@@ -45,7 +52,7 @@ function collisionResponse(object1, object2) {
         + (object2.y - (object1.y)) * (object2.y - object1.y),
     );
 
-    vCollisionNorm = new PIXI.Point(
+    const vCollisionNorm = new PIXI.Point(
         vCollision.x / distance,
         vCollision.y / distance,
     );
@@ -153,7 +160,7 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-        if (hooverSpeed > 1 && hooverSpeed < 20) {
+        if (mouseDown === true && hooverSpeed > 1 && hooverSpeed < 20) {
           startHoover();
         } else {
           stopHoover();
@@ -177,11 +184,13 @@ app.ticker.add((delta) => {
           );
 
           // dust has been hoovered!
-          dust.alpha = 0.7;
-          setTimeout(function () {
-            dust.alpha = 0;
-            app.stage.removeChild(dust);
-          }, 250);
+          if (mouseDown === true) {
+						dust.alpha = 0.7;
+	          setTimeout(function () {
+	            dust.alpha = 0;
+	            app.stage.removeChild(dust);
+	          }, 250);
+          }
         }
     }
 
@@ -243,7 +252,6 @@ const noise = new Tone.Noise({
 function startHoover() {
   //play a middle 'C' for the duration of an 8th note
   if (hooverStarted === false) {
-    // synth.triggerAttack("G4");
     env.triggerAttack();
     hooverStarted = true;
   }
@@ -251,7 +259,6 @@ function startHoover() {
 
 function stopHoover() {
   if (hooverStarted === true) {
-    // synth.triggerRelease();
     env.triggerRelease();
     hooverStarted = false;
   }
