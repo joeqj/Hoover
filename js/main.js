@@ -206,19 +206,21 @@ function resize() {
 resize();
 
 // Audio
+const mono = new Tone.Mono().toMaster();
+
 const env = new Tone.AmplitudeEnvelope({
 	"attack" : 0.5,
 	"decay" : 0.21,
 	"sustain" : 1,
-	"release" : 6,
-}).toMaster();
+	"release" : 2,
+}).connect(mono);
 
 var autoFilter = new Tone.AutoFilter({
   frequency : 2000 ,
   type : "sine" ,
   depth : 1 ,
   baseFrequency : 2000 ,
-  octaves : 2.6 ,
+  octaves : 3.6 ,
   filter : {
     type : "lowpass" ,
     rolloff : -12 ,
@@ -229,13 +231,13 @@ var autoFilter = new Tone.AutoFilter({
 const osc1 = new Tone.Oscillator({
 	"type" : "sine",
 	"frequency" : "G4",
-	"volume" : -19,
+	"volume" : -29,
 }).connect(autoFilter).start();
 
 const noise = new Tone.Noise({
   "type" : "pink",
   "playbackRate" : 1,
-  "volume" : -20
+  "volume" : -35
 }).connect(autoFilter).start();
 
 function startHoover() {
