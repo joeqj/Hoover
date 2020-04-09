@@ -3,41 +3,7 @@
 <head>
   <meta charset="utf-8">
   <title>Hoover :)</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-    }
-    canvas {
-      display:block;
-      margin: auto;
-    }
-    #frame {
-      position: absolute;
-      overflow: hidden;
-      top: 50%;
-      left: 50%;
-      width: 75%;
-      height: 80%;
-      transform: translate(50%, -50%);
-      -webkit-transform: translate(-50%, -50%);
-    }
-    p {
-      font-size: 1.5rem;
-      font-weight: bold;
-      margin: 1rem auto;
-      font-family: Helvetica, Arial, sans-serif;
-      display: block;
-      text-align: center;
-      letter-spacing: -1px;
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-       -khtml-user-select: none;
-         -moz-user-select: none;
-          -ms-user-select: none;
-              user-select: none;
-    }
-  </style>
+  <link rel="stylesheet" href="/dist/main.css">
 </head>
 <body>
   <p>Click and drag to hoover</p>
@@ -45,6 +11,6 @@
 
   <script src="node_modules/pixi.js/dist/pixi.min.js"></script>
   <script src="node_modules/tone/build/Tone.js"></script>
-  <script src="js/main.js"></script>
+  <script src="dist/app.js"></script>
 </body>
 </html>

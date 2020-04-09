@@ -1,121 +1,32 @@
-// Based somewhat on this article by Spicy Yoghurt
-const app = new PIXI.Application({
-	autoResize: true,
-  resolution: devicePixelRatio,
-  backgroundColor: 0x111111
-});
-document.querySelector('#frame').appendChild(app.view);
-
-// Resize canvas
-window.addEventListener('resize', resize);
-
-function resize() {
-	const parent = app.view.parentNode;
-	app.renderer.resize(parent.clientWidth, parent.clientHeight);
-}
-
-resize();
-
-
-// Options for how objects interact
-// How fast the hoover moves
-const movementSpeed = 0.10;
-
-let hooverStarted = false;
-
-// Strength of the impulse push between two objects
-const impulsePower = 3;
-
-let mouseDown = false;
-
-document.addEventListener("mousedown", function() {
-	mouseDown = true;
-});
-document.addEventListener("mouseup", function() {
-	mouseDown = false;
-});
-
-// Test For Hit
-// A basic AABB check between two different squares
-function testForAABB(object1, object2) {
-    const bounds1 = object1.getBounds();
-    const bounds2 = object2.getBounds();
-
-    return bounds1.x < bounds2.x + bounds2.width
-        && bounds1.x + bounds2.width - 38 > bounds2.x
-        && bounds1.y < bounds2.y + bounds2.height
-        && bounds1.y + bounds2.height - 220 > bounds2.y;
-}
-
-// Calculates the results of a collision, object2 is hoover
-function collisionResponse(object1, object2) {
-    if (!object1 || !object2) {
-        return new PIXI.Point(0);
-    }
-
-    const vCollision = new PIXI.Point(
-        object2.x - object1.x,
-        object2.y - object1.y,
-    );
-
-    const distance = Math.sqrt(
-        (object2.x - object1.x) * (object2.x - object1.x)
-        + (object2.y - (object1.y)) * (object2.y - object1.y),
-    );
-
-    const vCollisionNorm = new PIXI.Point(
-        vCollision.x / distance,
-        vCollision.y / distance,
-    );
-
-    const vRelativeVelocity = new PIXI.Point(
-        object1.acceleration.x - object2.acceleration.x,
-        object1.acceleration.y - object2.acceleration.y,
-    );
-
-    const speed = vRelativeVelocity.x * vCollisionNorm.x
-        + vRelativeVelocity.y * vCollisionNorm.y;
-
-    const impulse = impulsePower * speed / (object1.mass + object2.mass);
-
-    return new PIXI.Point(
-        impulse * vCollisionNorm.x,
-        impulse * vCollisionNorm.y,
-    );
-}
-
-// Calculate the distance between two given points
-function distanceBetweenTwoPoints(p1, p2) {
-    const a = p1.x - p2.x;
-    const b = p1.y - p2.y;
-
-    return Math.hypot(a, b);
-}
-
-// The dust we will knock about
-let dustArray = [];
-
-for (var i = 0; i < 3000; i++) {
-	var sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+for (var i = 0; i < 4000; i++) {
+	var sprite = new PIXI.Sprite.from('assets/dust.png');
 	sprite.width = 10;
 	sprite.height = 10;
-	sprite.tint = '0x008b8b';
+	sprite.tint = '0xffeeee';
 	sprite.acceleration = new PIXI.Point(0);
 	sprite.mass = 1;
 	sprite.alpha = 1;
 	sprite.name = sprite + i;
 
-	sprite.position.set((Math.floor(Math.random() * app.screen.width)), (Math.floor(Math.random() * app.screen.width)));
+	var x = (Math.floor(Math.random() * app.screen.width));
+	var y = (Math.floor(Math.random() * app.screen.width));
+
+	sprite.position.set(x,y);
 	dustArray.push(sprite);
 }
 
 // The square you move around
-const hoover = PIXI.Sprite.from('assets/hoover.png');
+let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
+let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
+let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
+
+let hoover = PIXI.Sprite.from(hooverCenterTexture);
 hoover.position.set(0, 0);
 hoover.width = 50;
 hoover.height = 134;
 hoover.acceleration = new PIXI.Point(0);
 hoover.mass = 1;
+
 
 // Listen for animate update
 app.ticker.add((delta) => {
@@ -156,7 +67,7 @@ app.ticker.add((delta) => {
         // Get the hoover's center point
         const hooverCenterPosition = new PIXI.Point(
             hoover.x + (hoover.width * 0.5),
-            hoover.y + (hoover.height * 0.5),
+            hoover.y + (hoover.height * 0.05),
         );
 
         // Calculate the direction vector between the mouse pointer and
@@ -187,6 +98,17 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
+				if (hooverCenterPosition.x > mouseCoords.x + 15 && hooverSpeed > 2) {
+					hoover.texture = hooverLeftTexture;
+					hoover.width = 134;
+				} else if (hooverCenterPosition.x < mouseCoords.x && hooverSpeed > 4) {
+					hoover.texture = hooverRightTexture;
+					hoover.width = 134;
+				} else {
+					hoover.texture = hooverCenterTexture;
+					hoover.width = 50;
+				}
+
         // if (mouseDown === true && hooverSpeed > 1 && hooverSpeed < 20) {
         //   startHoover();
         // } else {
@@ -199,6 +121,8 @@ app.ticker.add((delta) => {
           stopHoover();
         }
     }
+
+
 
     // Colliding
     for (var i = 0; i < dustArray.length; i++) {
@@ -249,58 +173,3 @@ for (var i = 0; i < dustArray.length; i++) {
 	app.stage.addChild(dustArray[i]);
 }
 app.stage.addChild(hoover);
-
-// Audio
-const mono = new Tone.Mono().toMaster();
-
-const env = new Tone.AmplitudeEnvelope({
-	"attack" : 0.5,
-	"decay" : 0.21,
-	"sustain" : 1,
-	"release" : 2,
-}).connect(mono);
-
-var autoFilter = new Tone.AutoFilter({
-  frequency : 2000 ,
-  type : "sine" ,
-  depth : 1 ,
-  baseFrequency : 2000 ,
-  octaves : 3.6 ,
-  filter : {
-    type : "lowpass" ,
-    rolloff : -12 ,
-    Q : 1
-  }
-}).connect(env).start();
-
-const osc1 = new Tone.Oscillator({
-	"type" : "sine",
-	"frequency" : "G4",
-	"volume" : -29,
-}).connect(autoFilter).start();
-
-const noise = new Tone.Noise({
-  "type" : "pink",
-  "playbackRate" : 1,
-  "volume" : -35
-}).connect(autoFilter).start();
-
-function startHoover() {
-  //play a middle 'C' for the duration of an 8th note
-  if (hooverStarted === false) {
-    env.triggerAttack();
-    hooverStarted = true;
-  }
-}
-
-function stopHoover() {
-  if (hooverStarted === true) {
-    env.triggerRelease();
-    hooverStarted = false;
-  }
-}
-
-if (Tone.context.state !== 'running') {
-  Tone.context.resume();
-  console.log("yo");
-}

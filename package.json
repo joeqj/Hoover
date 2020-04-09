@@ -4,7 +4,15 @@
   "description": "a basic hoover game using pixi.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "scss": "node-sass -o dist sass/main.scss",
+    "concat:js": "concat -o dist/app.js js/init.js js/collision.js js/audio.js js/main.js",
+    "concat": "npm run concat:js",
+    "cssmin": "cleancss -o dist/main.min.css dist/main.css",
+    "build:css": "npm run scss && npm run cssmin",
+    "build:js": "npm run concat:js",
+    "build": "npm run build:css && npm run build:js",
+    "watch:css": "onchange 'sass/*.scss' -- npm run build:css",
+    "watch:js": "onchange 'js/*.js' -- npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -17,7 +25,12 @@
   },
   "homepage": "https://github.com/joeqj/Hoover#readme",
   "dependencies": {
+    "clean-css-cli": "^4.3.0",
+    "concat": "^1.0.3",
+    "node-sass": "^4.13.1",
+    "onchange": "^6.1.0",
     "pixi.js": "^5.2.1",
-    "tone": "^13.8.25"
+    "tone": "^13.8.25",
+    "uglify-js": "^3.8.1"
   }
 }
