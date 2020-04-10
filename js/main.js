@@ -65,7 +65,7 @@ app.ticker.add((delta) => {
 				// every 2 seconds
 		    if(!last || app.ticker.lastTime - last >= 4*1000) {
 	        last = app.ticker.lastTime;
-					addDust();
+					increaseDust();
 		    }
     }
 

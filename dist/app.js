@@ -36,12 +36,12 @@ function resize() {
 }
 resize();
 
-let rug = new PIXI.Graphics();
+let rug1 = PIXI.Texture.from('assets/rug1.png');
 
-rug.beginFill(0x000000);
+let rug = new PIXI.Sprite.from(rug1);
 
-// draw a rectangle
-rug.drawRect(0, 0, (app.screen.width / 1.7), (app.screen.height / 1.5));
+rug.width = (app.screen.width / 1.7);
+rug.height = (app.screen.height / 1.5);
 
 rug.position.x = (app.screen.width / 2) - (rug.width / 2);
 rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
@@ -110,10 +110,10 @@ dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
 for (var i = 0; i < dustCount; i++) {
-	var sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+	var sprite = new PIXI.Sprite.from('assets/dust.png');
 	sprite.width = 10;
 	sprite.height = 10;
-	sprite.tint = '0x00838e';
+	// sprite.tint = '0x000000';
 	sprite.acceleration = new PIXI.Point(0);
 	sprite.mass = 1;
 	sprite.alpha = 1;
@@ -126,29 +126,18 @@ for (var i = 0; i < dustCount; i++) {
 	dustArray.push(sprite);
 }
 
-var increaseDust = (function() {
-    var executed = false;
-    return function() {
-        if (!executed) {
-            executed = true;
-            // do something
-        }
-    };
-})();
-
-function addDust() {
+function increaseDust() {
   if (dustContainer.children.length < dustCount) {
-		var sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		var sprite = new PIXI.Sprite.from('assets/dust.png');
 		sprite.width = 10;
 		sprite.height = 10;
-		sprite.tint = '0x00838e';
 		sprite.acceleration = new PIXI.Point(0);
 		sprite.mass = 1;
 		sprite.alpha = 1;
 		sprite.name = sprite + i;
 
     var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 5) * 5;
-    var y = Math.ceil((Math.floor(Math.random() * rug.height - 9)) / 5) * 5;
+    var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 5) * 5;
 
     sprite.position.set(x,y);
     dustArray.push(sprite);
@@ -333,7 +322,7 @@ app.ticker.add((delta) => {
 				// every 2 seconds
 		    if(!last || app.ticker.lastTime - last >= 4*1000) {
 	        last = app.ticker.lastTime;
-					addDust();
+					increaseDust();
 		    }
     }
 

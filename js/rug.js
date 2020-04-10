@@ -1,9 +1,9 @@
-let rug = new PIXI.Graphics();
+let rug1 = PIXI.Texture.from('assets/rug1.png');
 
-rug.beginFill(0x000000);
+let rug = new PIXI.Sprite.from(rug1);
 
-// draw a rectangle
-rug.drawRect(0, 0, (app.screen.width / 1.7), (app.screen.height / 1.5));
+rug.width = (app.screen.width / 1.7);
+rug.height = (app.screen.height / 1.5);
 
 rug.position.x = (app.screen.width / 2) - (rug.width / 2);
 rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
