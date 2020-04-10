@@ -2,8 +2,10 @@ let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
 let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
 let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
 
-let hooverTicker = 0;
-let hooverMoved = false;
+let hooverStarted = false;
+
+let hooverCollisionWidth = 50;
+let hooverCollisionOffset = 0;
 
 let hoover = PIXI.Sprite.from(hooverCenterTexture);
 hoover.position.set(0, 0);
@@ -24,7 +26,7 @@ function hooverDust(dust, collision) {
 		dust.alpha = 0.7;
 		setTimeout(function () {
 			dust.alpha = 0;
-			app.stage.removeChild(dust);
+			dustContainer.removeChild(dust);
 		}, 250);
 	}
 }
@@ -32,14 +34,20 @@ function hooverDust(dust, collision) {
 function hooverLeft() {
 	hoover.texture = hooverLeftTexture;
 	hoover.width = 134;
+	hooverCollisionWidth = 250;
+	hooverCollisionOffset = 150;
 }
 
 function hooverRight() {
 	hoover.texture = hooverRightTexture;
 	hoover.width = 134;
+	hooverCollisionWidth = 250;
+	hooverCollisionOffset = 0;
 }
 
 function hooverCenter() {
 	hoover.texture = hooverCenterTexture;
 	hoover.width = 50;
+	hooverCollisionWidth = 50;
+	hooverCollisionOffset = 0;
 }

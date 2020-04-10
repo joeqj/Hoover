@@ -1,21 +1,4 @@
-for (var i = 0; i < 4000; i++) {
-	var sprite = new PIXI.Sprite.from('assets/dust.png');
-	sprite.width = 10;
-	sprite.height = 10;
-	sprite.tint = '0xffeeee';
-	sprite.acceleration = new PIXI.Point(0);
-	sprite.mass = 1;
-	sprite.alpha = 1;
-	sprite.name = sprite + i;
-
-	var x = (Math.floor(Math.random() * app.screen.width));
-	var y = (Math.floor(Math.random() * app.screen.width));
-
-	sprite.position.set(x,y);
-	dustArray.push(sprite);
-}
-
-// Listen for animate update
+// Animate!
 app.ticker.add((delta) => {
     // Applied deacceleration for both squares, done by hooverucing the
     // acceleration by 0.01% of the acceleration every loop
@@ -79,25 +62,25 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-				if (hooverCenterPosition.x > mouseCoords.x + 15 && distMousehoover > 30) {
+				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 15 && distMousehoover > 30) {
 					hooverRight();
 				} else {
-					setTimeout(hooverCenter, 150);
+					setTimeout(hooverCenter, 10);
 				}
-
-        // if (mouseDown === true && hooverSpeed > 1 && hooverSpeed < 20) {
-        //   startHoover();
-        // } else {
-        //   stopHoover();
-        // }
 
 				if (mouseDown === true) {
           startHoover();
         } else {
           stopHoover();
         }
+
+				// every 2 seconds
+		    if(!last || app.ticker.lastTime - last >= 0.2*1000) {
+	        last = app.ticker.lastTime;
+					addDust();
+		    }
     }
 
     // Colliding
@@ -128,7 +111,8 @@ app.ticker.add((delta) => {
 
 // Add to stage
 for (var i = 0; i < dustArray.length; i++) {
-	app.stage.addChild(dustArray[i]);
+	dustContainer.addChild(dustArray[i]);
 }
 
+app.stage.addChild(dustContainer);
 app.stage.addChild(hoover);

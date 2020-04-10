@@ -11,8 +11,11 @@ const movementSpeed = 0.10;
 // Strength of the impulse push between two objects
 const impulsePower = 3;
 
-let dustArray = [];
-let hooverStarted = false;
+let dustContainer = new PIXI.Container();
+
+let dustCount = 4000;
+
+let last = 0;
 
 // Mouse events
 let mouseDown = false;
@@ -37,8 +40,10 @@ let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
 let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
 let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
 
-let hooverTicker = 0;
-let hooverMoved = false;
+let hooverStarted = false;
+
+let hooverCollisionWidth = 50;
+let hooverCollisionOffset = 0;
 
 let hoover = PIXI.Sprite.from(hooverCenterTexture);
 hoover.position.set(0, 0);
@@ -59,7 +64,7 @@ function hooverDust(dust, collision) {
 		dust.alpha = 0.7;
 		setTimeout(function () {
 			dust.alpha = 0;
-			app.stage.removeChild(dust);
+			dustContainer.removeChild(dust);
 		}, 250);
 	}
 }
@@ -67,16 +72,73 @@ function hooverDust(dust, collision) {
 function hooverLeft() {
 	hoover.texture = hooverLeftTexture;
 	hoover.width = 134;
+	hooverCollisionWidth = 250;
+	hooverCollisionOffset = 150;
 }
 
 function hooverRight() {
 	hoover.texture = hooverRightTexture;
 	hoover.width = 134;
+	hooverCollisionWidth = 250;
+	hooverCollisionOffset = 0;
 }
 
 function hooverCenter() {
 	hoover.texture = hooverCenterTexture;
 	hoover.width = 50;
+	hooverCollisionWidth = 50;
+	hooverCollisionOffset = 0;
+}
+
+let dustArray = [];
+
+for (var i = 0; i < dustCount; i++) {
+	var sprite = new PIXI.Sprite.from('assets/dust.png');
+	sprite.width = 10;
+	sprite.height = 10;
+	sprite.tint = '0xffeeee';
+	sprite.acceleration = new PIXI.Point(0);
+	sprite.mass = 1;
+	sprite.alpha = 1;
+	sprite.name = sprite + i;
+
+	var x = Math.ceil((Math.floor(Math.random() * app.screen.width)) / 5) * 5;
+	var y = Math.ceil((Math.floor(Math.random() * app.screen.height)) / 5) * 5;
+
+	sprite.position.set(x,y);
+	dustArray.push(sprite);
+}
+
+var increaseDust = (function() {
+    var executed = false;
+    return function() {
+        if (!executed) {
+            executed = true;
+            // do something
+        }
+    };
+})();
+
+function addDust() {
+  if (dustContainer.children.length < dustCount) {
+    var sprite = new PIXI.Sprite.from('assets/dust.png');
+    sprite.width = 10;
+    sprite.height = 10;
+    sprite.tint = '0xffeeee';
+    sprite.acceleration = new PIXI.Point(0);
+    sprite.mass = 1;
+    sprite.alpha = 1;
+    sprite.name = sprite + i;
+
+    var x = Math.ceil((Math.floor(Math.random() * app.screen.width)) / 5) * 5;
+    var y = Math.ceil((Math.floor(Math.random() * app.screen.height)) / 5) * 5;
+
+    sprite.position.set(x,y);
+    dustArray.push(sprite);
+    dustContainer.addChild(sprite);
+
+    console.log(dustContainer.children.length);
+  }
 }
 
 // A basic AABB check
@@ -84,8 +146,11 @@ function testForAABB(object1, object2) {
     const bounds1 = object1.getBounds();
     const bounds2 = object2.getBounds();
 
+    bounds2.x = bounds2.x - hooverCollisionOffset;
+    bounds2.y = bounds2.y + 20;
+
     return bounds1.x < bounds2.x + bounds2.width
-        && bounds1.x + bounds2.width - 38 > bounds2.x
+        && bounds1.x + bounds2.width - hooverCollisionWidth > bounds2.x
         && bounds1.y < bounds2.y + bounds2.height
         && bounds1.y + bounds2.height - 220 > bounds2.y;
 }
@@ -184,24 +249,7 @@ if (Tone.context.state !== 'running') {
   console.log("yo");
 }
 
-for (var i = 0; i < 4000; i++) {
-	var sprite = new PIXI.Sprite.from('assets/dust.png');
-	sprite.width = 10;
-	sprite.height = 10;
-	sprite.tint = '0xffeeee';
-	sprite.acceleration = new PIXI.Point(0);
-	sprite.mass = 1;
-	sprite.alpha = 1;
-	sprite.name = sprite + i;
-
-	var x = (Math.floor(Math.random() * app.screen.width));
-	var y = (Math.floor(Math.random() * app.screen.width));
-
-	sprite.position.set(x,y);
-	dustArray.push(sprite);
-}
-
-// Listen for animate update
+// Animate!
 app.ticker.add((delta) => {
     // Applied deacceleration for both squares, done by hooverucing the
     // acceleration by 0.01% of the acceleration every loop
@@ -265,25 +313,25 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-				if (hooverCenterPosition.x > mouseCoords.x + 15 && distMousehoover > 30) {
+				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 15 && distMousehoover > 30) {
 					hooverRight();
 				} else {
-					setTimeout(hooverCenter, 150);
+					setTimeout(hooverCenter, 10);
 				}
-
-        // if (mouseDown === true && hooverSpeed > 1 && hooverSpeed < 20) {
-        //   startHoover();
-        // } else {
-        //   stopHoover();
-        // }
 
 				if (mouseDown === true) {
           startHoover();
         } else {
           stopHoover();
         }
+
+				// every 2 seconds
+		    if(!last || app.ticker.lastTime - last >= 0.2*1000) {
+	        last = app.ticker.lastTime;
+					addDust();
+		    }
     }
 
     // Colliding
@@ -314,7 +362,8 @@ app.ticker.add((delta) => {
 
 // Add to stage
 for (var i = 0; i < dustArray.length; i++) {
-	app.stage.addChild(dustArray[i]);
+	dustContainer.addChild(dustArray[i]);
 }
 
+app.stage.addChild(dustContainer);
 app.stage.addChild(hoover);

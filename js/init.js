@@ -11,8 +11,11 @@ const movementSpeed = 0.10;
 // Strength of the impulse push between two objects
 const impulsePower = 3;
 
-let dustArray = [];
-let hooverStarted = false;
+let dustContainer = new PIXI.Container();
+
+let dustCount = 4000;
+
+let last = 0;
 
 // Mouse events
 let mouseDown = false;

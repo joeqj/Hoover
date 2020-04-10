@@ -3,8 +3,11 @@ function testForAABB(object1, object2) {
     const bounds1 = object1.getBounds();
     const bounds2 = object2.getBounds();
 
+    bounds2.x = bounds2.x - hooverCollisionOffset;
+    bounds2.y = bounds2.y + 20;
+
     return bounds1.x < bounds2.x + bounds2.width
-        && bounds1.x + bounds2.width - 38 > bounds2.x
+        && bounds1.x + bounds2.width - hooverCollisionWidth > bounds2.x
         && bounds1.y < bounds2.y + bounds2.height
         && bounds1.y + bounds2.height - 220 > bounds2.y;
 }
