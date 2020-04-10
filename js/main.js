@@ -15,45 +15,26 @@ for (var i = 0; i < 4000; i++) {
 	dustArray.push(sprite);
 }
 
-// The square you move around
-let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
-let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
-let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
-
-let hoover = PIXI.Sprite.from(hooverCenterTexture);
-hoover.position.set(0, 0);
-hoover.width = 50;
-hoover.height = 134;
-hoover.acceleration = new PIXI.Point(0);
-hoover.mass = 1;
-
-
 // Listen for animate update
 app.ticker.add((delta) => {
     // Applied deacceleration for both squares, done by hooverucing the
     // acceleration by 0.01% of the acceleration every loop
     hoover.acceleration.set(hoover.acceleration.x * 0.99, hoover.acceleration.y * 0.99);
-		for (var i = 0; i < dustArray.length; i++) {
-			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
-		}
 
     const mouseCoords = app.renderer.plugins.interaction.mouse.global;
 
-    // Check whether the dust ever moves off the screen
 		for (var i = 0; i < dustArray.length; i++) {
+			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
+
+			// Check whether the dust ever moves off the screen
 			if (dustArray[i].x < 0 || dustArray[i].x > (app.screen.width - 20)) {
 	        dustArray[i].acceleration.x = -dustArray[i].acceleration.x;
 	    }
-		}
-
-		for (var i = 0; i < dustArray.length; i++) {
 			if (dustArray[i].y < 0 || dustArray[i].y > (app.screen.height - 20)) {
 	        dustArray[i].acceleration.y = -dustArray[i].acceleration.y;
 	    }
-		}
 
-    // If the dust pops out of the cordon, it pops back into the middle
-		for (var i = 0; i < dustArray.length; i++) {
+			// If the dust pops out of the cordon, it pops back into the middle
 			if ((dustArray[i].x < -20 || dustArray[i].x > (app.screen.width + 20))
 	        || dustArray[i].y < -20 || dustArray[i].y > (app.screen.height + 20)) {
 	        app.stage.removeChild(dustArray[i]);
@@ -98,15 +79,12 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-				if (hooverCenterPosition.x > mouseCoords.x + 15 && hooverSpeed > 2) {
-					hoover.texture = hooverLeftTexture;
-					hoover.width = 134;
-				} else if (hooverCenterPosition.x < mouseCoords.x && hooverSpeed > 4) {
-					hoover.texture = hooverRightTexture;
-					hoover.width = 134;
+				if (hooverCenterPosition.x > mouseCoords.x + 15 && distMousehoover > 30) {
+					hooverLeft();
+				} else if (hooverCenterPosition.x < mouseCoords.x && distMousehoover > 30) {
+					hooverRight();
 				} else {
-					hoover.texture = hooverCenterTexture;
-					hoover.width = 50;
+					setTimeout(hooverCenter, 150);
 				}
 
         // if (mouseDown === true && hooverSpeed > 1 && hooverSpeed < 20) {
@@ -121,8 +99,6 @@ app.ticker.add((delta) => {
           stopHoover();
         }
     }
-
-
 
     // Colliding
     for (var i = 0; i < dustArray.length; i++) {
@@ -150,26 +126,9 @@ app.ticker.add((delta) => {
     hoover.y += hoover.acceleration.y * delta;
 });
 
-function hooverDust(dust, collision) {
-	// dust has been hoovered!
-	if (mouseDown === true) {
-
-		//hoover collision
-		// hoover.acceleration.set(
-		// 		(collision.x * dust.mass / 10),
-		// 		(collision.y * dust.mass / 10),
-		// );
-
-		dust.alpha = 0.7;
-		setTimeout(function () {
-			dust.alpha = 0;
-			app.stage.removeChild(dust);
-		}, 250);
-	}
-}
-
 // Add to stage
 for (var i = 0; i < dustArray.length; i++) {
 	app.stage.addChild(dustArray[i]);
 }
+
 app.stage.addChild(hoover);
