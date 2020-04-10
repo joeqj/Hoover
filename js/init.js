@@ -19,6 +19,7 @@ let last = 0;
 
 // Mouse events
 let mouseDown = false;
+
 document.addEventListener("mousedown", function() {
 	mouseDown = true;
   document.querySelector('#frame').style.cursor = "grabbing";
