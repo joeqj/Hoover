@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "scss": "node-sass -o dist sass/main.scss",
-    "concat:js": "concat -o dist/app.js js/init.js js/hoover.js js/dust.js js/collision.js js/audio.js js/main.js",
+    "concat:js": "concat -o dist/app.js js/init.js js/rug.js js/hoover.js js/dust.js js/collision.js js/audio.js js/main.js",
     "concat": "npm run concat:js",
     "cssmin": "cleancss -o dist/main.min.css dist/main.css",
     "build:css": "npm run scss && npm run cssmin",

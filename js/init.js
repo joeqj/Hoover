@@ -2,7 +2,7 @@
 const app = new PIXI.Application({
 	autoResize: true,
   resolution: devicePixelRatio,
-  backgroundColor: 0x111111
+  backgroundColor: 0x008040
 });
 document.querySelector('#frame').appendChild(app.view);
 

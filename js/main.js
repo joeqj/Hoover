@@ -8,20 +8,6 @@ app.ticker.add((delta) => {
 
 		for (var i = 0; i < dustArray.length; i++) {
 			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
-
-			// Check whether the dust ever moves off the screen
-			if (dustArray[i].x < 0 || dustArray[i].x > (app.screen.width - 20)) {
-	        dustArray[i].acceleration.x = -dustArray[i].acceleration.x;
-	    }
-			if (dustArray[i].y < 0 || dustArray[i].y > (app.screen.height - 20)) {
-	        dustArray[i].acceleration.y = -dustArray[i].acceleration.y;
-	    }
-
-			// If the dust pops out of the cordon, it pops back into the middle
-			if ((dustArray[i].x < -20 || dustArray[i].x > (app.screen.width + 20))
-	        || dustArray[i].y < -20 || dustArray[i].y > (app.screen.height + 20)) {
-	        app.stage.removeChild(dustArray[i]);
-	    }
 		}
 
 
@@ -64,7 +50,7 @@ app.ticker.add((delta) => {
 
 				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x - 15 && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 25 && distMousehoover > 30) {
 					hooverRight();
 				} else {
 					setTimeout(hooverCenter, 10);
@@ -77,7 +63,7 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 0.2*1000) {
+		    if(!last || app.ticker.lastTime - last >= 4*1000) {
 	        last = app.ticker.lastTime;
 					addDust();
 		    }

@@ -2,7 +2,7 @@
 const app = new PIXI.Application({
 	autoResize: true,
   resolution: devicePixelRatio,
-  backgroundColor: 0x111111
+  backgroundColor: 0x008040
 });
 document.querySelector('#frame').appendChild(app.view);
 
@@ -35,6 +35,18 @@ function resize() {
 	app.renderer.resize(parent.clientWidth, parent.clientHeight);
 }
 resize();
+
+let rug = new PIXI.Graphics();
+
+rug.beginFill(0x000000);
+
+// draw a rectangle
+rug.drawRect(0, 0, (app.screen.width / 1.7), (app.screen.height / 1.5));
+
+rug.position.x = (app.screen.width / 2) - (rug.width / 2);
+rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
+
+app.stage.addChild(rug);
 
 let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
 let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
@@ -92,18 +104,23 @@ function hooverCenter() {
 
 let dustArray = [];
 
+dustContainer.width = rug.width;
+dustContainer.height = rug.height;
+dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
+dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
+
 for (var i = 0; i < dustCount; i++) {
-	var sprite = new PIXI.Sprite.from('assets/dust.png');
+	var sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
 	sprite.width = 10;
 	sprite.height = 10;
-	sprite.tint = '0xffeeee';
+	sprite.tint = '0x00838e';
 	sprite.acceleration = new PIXI.Point(0);
 	sprite.mass = 1;
 	sprite.alpha = 1;
 	sprite.name = sprite + i;
 
-	var x = Math.ceil((Math.floor(Math.random() * app.screen.width)) / 5) * 5;
-	var y = Math.ceil((Math.floor(Math.random() * app.screen.height)) / 5) * 5;
+	var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 5) * 5;
+	var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 5) * 5;
 
 	sprite.position.set(x,y);
 	dustArray.push(sprite);
@@ -121,17 +138,17 @@ var increaseDust = (function() {
 
 function addDust() {
   if (dustContainer.children.length < dustCount) {
-    var sprite = new PIXI.Sprite.from('assets/dust.png');
-    sprite.width = 10;
-    sprite.height = 10;
-    sprite.tint = '0xffeeee';
-    sprite.acceleration = new PIXI.Point(0);
-    sprite.mass = 1;
-    sprite.alpha = 1;
-    sprite.name = sprite + i;
+		var sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+		sprite.width = 10;
+		sprite.height = 10;
+		sprite.tint = '0x00838e';
+		sprite.acceleration = new PIXI.Point(0);
+		sprite.mass = 1;
+		sprite.alpha = 1;
+		sprite.name = sprite + i;
 
-    var x = Math.ceil((Math.floor(Math.random() * app.screen.width)) / 5) * 5;
-    var y = Math.ceil((Math.floor(Math.random() * app.screen.height)) / 5) * 5;
+    var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 5) * 5;
+    var y = Math.ceil((Math.floor(Math.random() * rug.height - 9)) / 5) * 5;
 
     sprite.position.set(x,y);
     dustArray.push(sprite);
@@ -259,20 +276,6 @@ app.ticker.add((delta) => {
 
 		for (var i = 0; i < dustArray.length; i++) {
 			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
-
-			// Check whether the dust ever moves off the screen
-			if (dustArray[i].x < 0 || dustArray[i].x > (app.screen.width - 20)) {
-	        dustArray[i].acceleration.x = -dustArray[i].acceleration.x;
-	    }
-			if (dustArray[i].y < 0 || dustArray[i].y > (app.screen.height - 20)) {
-	        dustArray[i].acceleration.y = -dustArray[i].acceleration.y;
-	    }
-
-			// If the dust pops out of the cordon, it pops back into the middle
-			if ((dustArray[i].x < -20 || dustArray[i].x > (app.screen.width + 20))
-	        || dustArray[i].y < -20 || dustArray[i].y > (app.screen.height + 20)) {
-	        app.stage.removeChild(dustArray[i]);
-	    }
 		}
 
 
@@ -315,7 +318,7 @@ app.ticker.add((delta) => {
 
 				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x - 15 && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 25 && distMousehoover > 30) {
 					hooverRight();
 				} else {
 					setTimeout(hooverCenter, 10);
@@ -328,7 +331,7 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 0.2*1000) {
+		    if(!last || app.ticker.lastTime - last >= 4*1000) {
 	        last = app.ticker.lastTime;
 					addDust();
 		    }
