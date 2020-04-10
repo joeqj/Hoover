@@ -13,7 +13,7 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 4000;
+let dustCount = 3000;
 
 let last = 0;
 
@@ -59,8 +59,8 @@ let hooverCollisionOffset = 0;
 
 let hoover = PIXI.Sprite.from(hooverCenterTexture);
 hoover.position.set(0, 0);
-hoover.width = 50;
-hoover.height = 134;
+hoover.width = 75;
+hoover.height = 201;
 hoover.acceleration = new PIXI.Point(0);
 hoover.mass = 1;
 
@@ -83,21 +83,21 @@ function hooverDust(dust, collision) {
 
 function hooverLeft() {
 	hoover.texture = hooverLeftTexture;
-	hoover.width = 134;
+	hoover.width = 201;
 	hooverCollisionWidth = 250;
 	hooverCollisionOffset = 150;
 }
 
 function hooverRight() {
 	hoover.texture = hooverRightTexture;
-	hoover.width = 134;
+	hoover.width = 201;
 	hooverCollisionWidth = 250;
 	hooverCollisionOffset = 0;
 }
 
 function hooverCenter() {
 	hoover.texture = hooverCenterTexture;
-	hoover.width = 50;
+	hoover.width = 75;
 	hooverCollisionWidth = 50;
 	hooverCollisionOffset = 0;
 }
@@ -111,16 +111,16 @@ dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
 for (var i = 0; i < dustCount; i++) {
 	var sprite = new PIXI.Sprite.from('assets/dust.png');
-	sprite.width = 10;
-	sprite.height = 10;
-	// sprite.tint = '0x000000';
+	sprite.width = 12;
+	sprite.height = 12;
 	sprite.acceleration = new PIXI.Point(0);
 	sprite.mass = 1;
 	sprite.alpha = 1;
+	// sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 	sprite.name = sprite + i;
 
-	var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 5) * 5;
-	var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 5) * 5;
+	var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 7) * 7;
+	var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 7) * 7;
 
 	sprite.position.set(x,y);
 	dustArray.push(sprite);
@@ -129,8 +129,8 @@ for (var i = 0; i < dustCount; i++) {
 function increaseDust() {
   if (dustContainer.children.length < dustCount) {
 		var sprite = new PIXI.Sprite.from('assets/dust.png');
-		sprite.width = 10;
-		sprite.height = 10;
+		sprite.width = 12;
+		sprite.height = 12;
 		sprite.acceleration = new PIXI.Point(0);
 		sprite.mass = 1;
 		sprite.alpha = 1;
@@ -158,7 +158,7 @@ function testForAABB(object1, object2) {
     return bounds1.x < bounds2.x + bounds2.width
         && bounds1.x + bounds2.width - hooverCollisionWidth > bounds2.x
         && bounds1.y < bounds2.y + bounds2.height
-        && bounds1.y + bounds2.height - 220 > bounds2.y;
+        && bounds1.y + bounds2.height - 320 > bounds2.y;
 }
 
 // Calculates the results of a collision, object2 = hoover
@@ -305,9 +305,9 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
+				if (hooverCenterPosition.x > mouseCoords.x + 75 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x - 25 && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 55 && distMousehoover > 30) {
 					hooverRight();
 				} else {
 					setTimeout(hooverCenter, 10);
@@ -320,7 +320,7 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 4*1000) {
+		    if(!last || app.ticker.lastTime - last >= 1*1000) {
 	        last = app.ticker.lastTime;
 					increaseDust();
 		    }

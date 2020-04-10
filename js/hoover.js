@@ -9,8 +9,8 @@ let hooverCollisionOffset = 0;
 
 let hoover = PIXI.Sprite.from(hooverCenterTexture);
 hoover.position.set(0, 0);
-hoover.width = 50;
-hoover.height = 134;
+hoover.width = 75;
+hoover.height = 201;
 hoover.acceleration = new PIXI.Point(0);
 hoover.mass = 1;
 
@@ -33,21 +33,21 @@ function hooverDust(dust, collision) {
 
 function hooverLeft() {
 	hoover.texture = hooverLeftTexture;
-	hoover.width = 134;
+	hoover.width = 201;
 	hooverCollisionWidth = 250;
 	hooverCollisionOffset = 150;
 }
 
 function hooverRight() {
 	hoover.texture = hooverRightTexture;
-	hoover.width = 134;
+	hoover.width = 201;
 	hooverCollisionWidth = 250;
 	hooverCollisionOffset = 0;
 }
 
 function hooverCenter() {
 	hoover.texture = hooverCenterTexture;
-	hoover.width = 50;
+	hoover.width = 75;
 	hooverCollisionWidth = 50;
 	hooverCollisionOffset = 0;
 }

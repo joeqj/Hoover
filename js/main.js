@@ -48,9 +48,9 @@ app.ticker.add((delta) => {
             Math.sin(angleToMouse) * hooverSpeed,
         );
 
-				if (hooverCenterPosition.x > mouseCoords.x + 35 && distMousehoover > 30) {
+				if (hooverCenterPosition.x > mouseCoords.x + 75 && distMousehoover > 30) {
 					hooverLeft();
-				} else if (hooverCenterPosition.x < mouseCoords.x - 25 && distMousehoover > 30) {
+				} else if (hooverCenterPosition.x < mouseCoords.x - 55 && distMousehoover > 30) {
 					hooverRight();
 				} else {
 					setTimeout(hooverCenter, 10);
@@ -63,7 +63,7 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 4*1000) {
+		    if(!last || app.ticker.lastTime - last >= 1*1000) {
 	        last = app.ticker.lastTime;
 					increaseDust();
 		    }

@@ -9,7 +9,7 @@ function testForAABB(object1, object2) {
     return bounds1.x < bounds2.x + bounds2.width
         && bounds1.x + bounds2.width - hooverCollisionWidth > bounds2.x
         && bounds1.y < bounds2.y + bounds2.height
-        && bounds1.y + bounds2.height - 220 > bounds2.y;
+        && bounds1.y + bounds2.height - 320 > bounds2.y;
 }
 
 // Calculates the results of a collision, object2 = hoover
