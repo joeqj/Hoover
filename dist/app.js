@@ -13,7 +13,7 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 3000;
+let dustCount = 4000;
 
 let last = 0;
 
@@ -135,6 +135,7 @@ function increaseDust() {
 		sprite.acceleration = new PIXI.Point(0);
 		sprite.mass = 1;
 		sprite.alpha = 1;
+		// sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
 		sprite.name = sprite + i;
 
     var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 5) * 5;
