@@ -22,12 +22,6 @@ function startDust() {
 		sprite.position.set(x,y);
 		dustArray.push(sprite);
 	}
-	// Add to stage
-	for (var i = 0; i < dustArray.length; i++) {
-		dustContainer.addChild(dustArray[i]);
-	}
-
-	app.stage.addChild(dustContainer);
 }
 
 startDust();

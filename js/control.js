@@ -4,8 +4,10 @@ function resetGame() {
   for (var i = 0; i < dustArray.length; i++) {
   	dustContainer.addChild(dustArray[i]);
   }
-
+  isStageComplete = false;
+  app.stage.removeChild(hoover);
   app.stage.addChild(dustContainer);
+  app.stage.addChild(hoover);
 }
 
 var stageComplete = (function() {
