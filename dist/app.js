@@ -13,7 +13,9 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 4000;
+let dustCount = 1000;
+
+let isStageComplete = false;
 
 let last = 0;
 
@@ -41,6 +43,13 @@ let rug1 = PIXI.Texture.from('assets/rug1.png');
 
 let rug = new PIXI.Sprite.from(rug1);
 
+var blendCounter = 0;
+var rugBlend = [
+  PIXI.BLEND_MODES.SCREEN,
+  PIXI.BLEND_MODES.MULTIPLY,
+  PIXI.BLEND_MODES.SRC_IN
+];
+
 rug.width = (app.screen.width / 1.7);
 rug.height = (app.screen.height / 1.5);
 
@@ -48,6 +57,15 @@ rug.position.x = (app.screen.width / 2) - (rug.width / 2);
 rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
 
 app.stage.addChild(rug);
+
+function rugStrobe() {
+  if (blendCounter < 10000) {
+    rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
+  } else {
+    rug.blendMode = PIXI.BLEND_MODES.NORMAL;
+  }
+  blendCounter++;
+}
 
 let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
 let hooverRightTexture = PIXI.Texture.from('assets/hoover-r.png');
@@ -110,22 +128,26 @@ dustContainer.height = rug.height;
 dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
-for (var i = 0; i < dustCount; i++) {
-	var sprite = new PIXI.Sprite.from('assets/dust.png');
-	sprite.width = 12;
-	sprite.height = 12;
-	sprite.acceleration = new PIXI.Point(0);
-	sprite.mass = 1;
-	sprite.alpha = 1;
-	// sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
-	sprite.name = sprite + i;
+function startDustLevel() {
+	for (var i = 0; i < dustCount; i++) {
+		var sprite = new PIXI.Sprite.from('assets/dust.png');
+		sprite.width = 12;
+		sprite.height = 12;
+		sprite.acceleration = new PIXI.Point(0);
+		sprite.mass = 1;
+		sprite.alpha = 1;
+		// sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+		sprite.name = sprite + i;
 
-	var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 7) * 7;
-	var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 7) * 7;
+		var x = Math.ceil((Math.floor(Math.random() * rug.width - 9)) / 7) * 7;
+		var y = Math.ceil((Math.floor(Math.random() * rug.height + 10)) / 7) * 7;
 
-	sprite.position.set(x,y);
-	dustArray.push(sprite);
+		sprite.position.set(x,y);
+		dustArray.push(sprite);
+	}
 }
+
+startDustLevel();
 
 function increaseDust() {
   if (dustContainer.children.length < dustCount) {
@@ -322,10 +344,20 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 1*1000) {
-	        last = app.ticker.lastTime;
-					increaseDust();
-		    }
+		    if (isStageComplete === false) {
+          if(!last || app.ticker.lastTime - last >= 1*1000) {
+  	        last = app.ticker.lastTime;
+  					increaseDust();
+  		    }
+        }
+
+        // check for end of stage
+        if (dustContainer.children.length === 0) {
+          isStageComplete = true;
+          setInterval(function() {
+            rugStrobe();
+          }, 10);
+        }
     }
 
     // Colliding

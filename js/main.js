@@ -63,10 +63,20 @@ app.ticker.add((delta) => {
         }
 
 				// every 2 seconds
-		    if(!last || app.ticker.lastTime - last >= 1*1000) {
-	        last = app.ticker.lastTime;
-					increaseDust();
-		    }
+		    if (isStageComplete === false) {
+          if(!last || app.ticker.lastTime - last >= 1*1000) {
+  	        last = app.ticker.lastTime;
+  					increaseDust();
+  		    }
+        }
+
+        // check for end of stage
+        if (dustContainer.children.length === 0) {
+          isStageComplete = true;
+          setInterval(function() {
+            rugStrobe();
+          }, 10);
+        }
     }
 
     // Colliding

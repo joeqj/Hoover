@@ -13,7 +13,9 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 4000;
+let dustCount = 1000;
+
+let isStageComplete = false;
 
 let last = 0;
 
