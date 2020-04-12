@@ -5,11 +5,11 @@ dustContainer.height = rug.height;
 dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
-function startDustLevel() {
+function startDust() {
 	for (var i = 0; i < dustCount; i++) {
 		var sprite = new PIXI.Sprite.from('assets/dust.png');
-		sprite.width = 12;
-		sprite.height = 12;
+		sprite.width = 14;
+		sprite.height = 14;
 		sprite.acceleration = new PIXI.Point(0);
 		sprite.mass = 1;
 		sprite.alpha = 1;
@@ -22,9 +22,16 @@ function startDustLevel() {
 		sprite.position.set(x,y);
 		dustArray.push(sprite);
 	}
+	// Add to stage
+	for (var i = 0; i < dustArray.length; i++) {
+		dustContainer.addChild(dustArray[i]);
+	}
+
+	app.stage.addChild(dustContainer);
 }
 
-startDustLevel();
+startDust();
+
 
 function increaseDust() {
   if (dustContainer.children.length < dustCount) {

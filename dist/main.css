@@ -34,3 +34,13 @@ p {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none; }
+
+span#heat {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 999999;
+  pointer-events: none;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white; }

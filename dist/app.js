@@ -73,6 +73,8 @@ let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
 
 let hooverStarted = false;
 
+let hooverHeat = 0;
+
 let hooverCollisionWidth = 50;
 let hooverCollisionOffset = 0;
 
@@ -85,7 +87,7 @@ hoover.mass = 1;
 
 function hooverDust(dust, collision) {
 	// dust has been hoovered!
-	if (mouseDown === true) {
+	if (mouseDown === true && hooverHeat < 100) {
 		//hoover collision
 		// hoover.acceleration.set(
 		// 		(collision.x * dust.mass / 10),
@@ -98,6 +100,21 @@ function hooverDust(dust, collision) {
 			dustContainer.removeChild(dust);
 		}, 250);
 	}
+}
+
+function updateHeat(direction, lvl) {
+	if (direction === 1) {
+		if (hooverHeat < 100) {
+			hooverHeat += lvl;
+		}
+	}
+	if (direction === 0) {
+		if (hooverHeat > 0) {
+			hooverHeat -= lvl;
+			console.log("minus");
+		}
+	}
+	document.getElementById("heat").innerHTML = hooverHeat;
 }
 
 function hooverLeft() {
@@ -128,11 +145,11 @@ dustContainer.height = rug.height;
 dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
-function startDustLevel() {
+function startDust() {
 	for (var i = 0; i < dustCount; i++) {
 		var sprite = new PIXI.Sprite.from('assets/dust.png');
-		sprite.width = 12;
-		sprite.height = 12;
+		sprite.width = 14;
+		sprite.height = 14;
 		sprite.acceleration = new PIXI.Point(0);
 		sprite.mass = 1;
 		sprite.alpha = 1;
@@ -145,9 +162,16 @@ function startDustLevel() {
 		sprite.position.set(x,y);
 		dustArray.push(sprite);
 	}
+	// Add to stage
+	for (var i = 0; i < dustArray.length; i++) {
+		dustContainer.addChild(dustArray[i]);
+	}
+
+	app.stage.addChild(dustContainer);
 }
 
-startDustLevel();
+startDust();
+
 
 function increaseDust() {
   if (dustContainer.children.length < dustCount) {
@@ -279,6 +303,37 @@ if (Tone.context.state !== 'running') {
   console.log("yo");
 }
 
+var stageCompleteSound =  new Tone.Sampler({
+	"C3" : "assets/complete.mp3"
+}).toMaster();
+
+stageCompleteSound.volume = -15;
+
+function playCompleteSound() {
+	stageCompleteSound.triggerAttackRelease("C3");
+}
+
+function resetGame() {
+  startDust();
+  hooverHeat = 0;
+  for (var i = 0; i < dustArray.length; i++) {
+  	dustContainer.addChild(dustArray[i]);
+  }
+
+  app.stage.addChild(dustContainer);
+}
+
+var stageComplete = (function() {
+    var executed = false;
+    return function() {
+        if (!executed) {
+            executed = true;
+            playCompleteSound();
+            setTimeout(resetGame, 5000);
+        }
+    };
+})();
+
 // Animate!
 app.ticker.add((delta) => {
     // Applied deacceleration for both squares, done by hooverucing the
@@ -339,16 +394,10 @@ app.ticker.add((delta) => {
 
 				if (mouseDown === true) {
           startHoover();
+          updateHeat(1, 0.2);
         } else {
           stopHoover();
-        }
-
-				// every 2 seconds
-		    if (isStageComplete === false) {
-          if(!last || app.ticker.lastTime - last >= 1*1000) {
-  	        last = app.ticker.lastTime;
-  					increaseDust();
-  		    }
+          updateHeat(0, 0.1);
         }
 
         // check for end of stage
@@ -358,6 +407,18 @@ app.ticker.add((delta) => {
             rugStrobe();
           }, 10);
         }
+
+        if (isStageComplete === false) {
+          // every 2 seconds
+          if(!last || app.ticker.lastTime - last >= 1*2000) {
+  	        last = app.ticker.lastTime;
+  					increaseDust();
+  		    }
+        } else {
+          // stage complete
+          stageComplete();
+        }
+
     }
 
     // Colliding

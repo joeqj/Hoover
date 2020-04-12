@@ -4,6 +4,8 @@ let hooverCenterTexture = PIXI.Texture.from('assets/hoover.png');
 
 let hooverStarted = false;
 
+let hooverHeat = 0;
+
 let hooverCollisionWidth = 50;
 let hooverCollisionOffset = 0;
 
@@ -16,7 +18,7 @@ hoover.mass = 1;
 
 function hooverDust(dust, collision) {
 	// dust has been hoovered!
-	if (mouseDown === true) {
+	if (mouseDown === true && hooverHeat < 100) {
 		//hoover collision
 		// hoover.acceleration.set(
 		// 		(collision.x * dust.mass / 10),
@@ -29,6 +31,21 @@ function hooverDust(dust, collision) {
 			dustContainer.removeChild(dust);
 		}, 250);
 	}
+}
+
+function updateHeat(direction, lvl) {
+	if (direction === 1) {
+		if (hooverHeat < 100) {
+			hooverHeat += lvl;
+		}
+	}
+	if (direction === 0) {
+		if (hooverHeat > 0) {
+			hooverHeat -= lvl;
+			console.log("minus");
+		}
+	}
+	document.getElementById("heat").innerHTML = hooverHeat;
 }
 
 function hooverLeft() {

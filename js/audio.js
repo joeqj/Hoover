@@ -52,3 +52,13 @@ if (Tone.context.state !== 'running') {
   Tone.context.resume();
   console.log("yo");
 }
+
+var stageCompleteSound =  new Tone.Sampler({
+	"C3" : "assets/complete.mp3"
+}).toMaster();
+
+stageCompleteSound.volume = -15;
+
+function playCompleteSound() {
+	stageCompleteSound.triggerAttackRelease("C3");
+}

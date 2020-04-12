@@ -58,16 +58,10 @@ app.ticker.add((delta) => {
 
 				if (mouseDown === true) {
           startHoover();
+          updateHeat(1, 0.2);
         } else {
           stopHoover();
-        }
-
-				// every 2 seconds
-		    if (isStageComplete === false) {
-          if(!last || app.ticker.lastTime - last >= 1*1000) {
-  	        last = app.ticker.lastTime;
-  					increaseDust();
-  		    }
+          updateHeat(0, 0.1);
         }
 
         // check for end of stage
@@ -77,6 +71,18 @@ app.ticker.add((delta) => {
             rugStrobe();
           }, 10);
         }
+
+        if (isStageComplete === false) {
+          // every 2 seconds
+          if(!last || app.ticker.lastTime - last >= 1*2000) {
+  	        last = app.ticker.lastTime;
+  					increaseDust();
+  		    }
+        } else {
+          // stage complete
+          stageComplete();
+        }
+
     }
 
     // Colliding
