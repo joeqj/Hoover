@@ -42,10 +42,9 @@ function updateHeat(direction, lvl) {
 	if (direction === 0) {
 		if (hooverHeat > 0) {
 			hooverHeat -= lvl;
-			console.log("minus");
 		}
 	}
-	document.getElementById("heat").innerHTML = hooverHeat;
+	heatControlBarUpdate();
 }
 
 function hooverLeft() {

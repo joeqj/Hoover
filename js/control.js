@@ -20,3 +20,9 @@ var stageComplete = (function() {
         }
     };
 })();
+
+function heatControlBarUpdate() {
+  setInterval(function() {
+    document.getElementById("heatStatus").style.width = hooverHeat + '%';
+  }, 10);
+}

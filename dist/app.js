@@ -59,7 +59,7 @@ rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
 app.stage.addChild(rug);
 
 function rugStrobe() {
-  if (blendCounter < 10000) {
+  if (blendCounter < 2000) {
     rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
   } else {
     rug.blendMode = PIXI.BLEND_MODES.NORMAL;
@@ -111,10 +111,9 @@ function updateHeat(direction, lvl) {
 	if (direction === 0) {
 		if (hooverHeat > 0) {
 			hooverHeat -= lvl;
-			console.log("minus");
 		}
 	}
-	document.getElementById("heat").innerHTML = hooverHeat;
+	heatControlBarUpdate();
 }
 
 function hooverLeft() {
@@ -329,6 +328,12 @@ var stageComplete = (function() {
         }
     };
 })();
+
+function heatControlBarUpdate() {
+  setInterval(function() {
+    document.getElementById("heatStatus").style.width = hooverHeat + '%';
+  }, 10);
+}
 
 // Animate!
 app.ticker.add((delta) => {

@@ -18,7 +18,7 @@ rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
 app.stage.addChild(rug);
 
 function rugStrobe() {
-  if (blendCounter < 10000) {
+  if (blendCounter < 2000) {
     rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
   } else {
     rug.blendMode = PIXI.BLEND_MODES.NORMAL;
