@@ -13,7 +13,10 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 1000;
+let dustCount = 1;
+
+let rugStrobeBlendCounter = 0;
+var rugisStrobing;
 
 let isStageComplete = false;
 

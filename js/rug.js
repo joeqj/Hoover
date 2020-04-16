@@ -1,8 +1,12 @@
-let rug1 = PIXI.Texture.from('assets/rug1.png');
+let rugArray = [
+  PIXI.Texture.from('assets/rug1.png'),
+  PIXI.Texture.from('assets/rug2.png'),
+];
 
-let rug = new PIXI.Sprite.from(rug1);
+var currentRug = rugArray[Math.floor(Math.random() * rugArray.length)];
 
-var blendCounter = 0;
+let rug = new PIXI.Sprite.from(currentRug);
+
 var rugBlend = [
   PIXI.BLEND_MODES.SCREEN,
   PIXI.BLEND_MODES.MULTIPLY,
@@ -17,11 +21,15 @@ rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
 
 app.stage.addChild(rug);
 
-function rugStrobe() {
-  if (blendCounter < 2000) {
-    rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
-  } else {
-    rug.blendMode = PIXI.BLEND_MODES.NORMAL;
+function changeRug() {
+  var newRug = rugArray[Math.floor(Math.random() * rugArray.length)];
+  while (newRug === currentRug) {
+    newRug = rugArray[Math.floor(Math.random() * rugArray.length)];
   }
-  blendCounter++;
+  rug.texture = newRug;
+  currentRug = newRug;
+}
+
+function rugStrobe() {
+  rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
 }

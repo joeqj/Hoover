@@ -1,22 +1,38 @@
+let isCompleteFunctionRun = false;
+
 function resetGame() {
   startDust();
   hooverHeat = 0;
+  app.stage.removeChild(dustContainer);
+  app.stage.removeChild(hoover);
   for (var i = 0; i < dustArray.length; i++) {
   	dustContainer.addChild(dustArray[i]);
   }
-  isStageComplete = false;
-  app.stage.removeChild(hoover);
+
   app.stage.addChild(dustContainer);
   app.stage.addChild(hoover);
+
+  changeRug();
+
+  // Initialise variables
+  isStageComplete = false;
+  isCompleteFunctionRun = false;
 }
 
 var stageComplete = (function() {
-    var executed = false;
     return function() {
-        if (!executed) {
-            executed = true;
+        if (!isCompleteFunctionRun) {
+            isCompleteFunctionRun = true;
             playCompleteSound();
-            setTimeout(resetGame, 5000);
+            rugisStrobing = setInterval(function() {
+              rugStrobe();
+            }, 10);
+            setTimeout(function() {
+              clearInterval(rugisStrobing);
+              rugStrobeBlendCounter = 0;
+              rug.blendMode = PIXI.BLEND_MODES.NORMAL;
+              setTimeout(resetGame, 2000);
+            }, 2000)
         }
     };
 })();

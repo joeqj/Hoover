@@ -8,8 +8,11 @@ app.ticker.add((delta) => {
 
 		for (var i = 0; i < dustArray.length; i++) {
 			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
-		}
 
+      if (dustArray[i].y < (rug.position.y - 120) || dustArray[i].y > (rug.position.y + rug.height - 80)) {
+	       dustContainer.removeChild(dustArray[i]);
+	    }
+		}
 
     // If the mouse is off screen, then don't update any further
     if (app.screen.width > mouseCoords.x || mouseCoords.x > 0
@@ -67,9 +70,6 @@ app.ticker.add((delta) => {
         // check for end of stage
         if (dustContainer.children.length === 0) {
           isStageComplete = true;
-          setInterval(function() {
-            rugStrobe();
-          }, 10);
         }
 
         if (isStageComplete === false) {

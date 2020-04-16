@@ -13,7 +13,10 @@ const impulsePower = 3;
 
 let dustContainer = new PIXI.Container();
 
-let dustCount = 1000;
+let dustCount = 1;
+
+let rugStrobeBlendCounter = 0;
+var rugisStrobing;
 
 let isStageComplete = false;
 
@@ -39,11 +42,15 @@ function resize() {
 }
 resize();
 
-let rug1 = PIXI.Texture.from('assets/rug1.png');
+let rugArray = [
+  PIXI.Texture.from('assets/rug1.png'),
+  PIXI.Texture.from('assets/rug2.png'),
+];
 
-let rug = new PIXI.Sprite.from(rug1);
+var currentRug = rugArray[Math.floor(Math.random() * rugArray.length)];
 
-var blendCounter = 0;
+let rug = new PIXI.Sprite.from(currentRug);
+
 var rugBlend = [
   PIXI.BLEND_MODES.SCREEN,
   PIXI.BLEND_MODES.MULTIPLY,
@@ -58,13 +65,17 @@ rug.position.y = (app.screen.height / 2) - (rug.height / 2) + 20;
 
 app.stage.addChild(rug);
 
-function rugStrobe() {
-  if (blendCounter < 2000) {
-    rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
-  } else {
-    rug.blendMode = PIXI.BLEND_MODES.NORMAL;
+function changeRug() {
+  var newRug = rugArray[Math.floor(Math.random() * rugArray.length)];
+  while (newRug === currentRug) {
+    newRug = rugArray[Math.floor(Math.random() * rugArray.length)];
   }
-  blendCounter++;
+  rug.texture = newRug;
+  currentRug = newRug;
+}
+
+function rugStrobe() {
+  rug.blendMode = rugBlend[Math.floor(Math.random() * rugBlend.length)];
 }
 
 let hooverLeftTexture = PIXI.Texture.from('assets/hoover-l.png');
@@ -145,6 +156,7 @@ dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
 function startDust() {
+	dustArray = [];
 	for (var i = 0; i < dustCount; i++) {
 		var sprite = new PIXI.Sprite.from('assets/dust.png');
 		sprite.width = 14;
@@ -306,25 +318,41 @@ function playCompleteSound() {
 	stageCompleteSound.triggerAttackRelease("C3");
 }
 
+let isCompleteFunctionRun = false;
+
 function resetGame() {
   startDust();
   hooverHeat = 0;
+  app.stage.removeChild(dustContainer);
+  app.stage.removeChild(hoover);
   for (var i = 0; i < dustArray.length; i++) {
   	dustContainer.addChild(dustArray[i]);
   }
-  isStageComplete = false;
-  app.stage.removeChild(hoover);
+
   app.stage.addChild(dustContainer);
   app.stage.addChild(hoover);
+
+  changeRug();
+
+  // Initialise variables
+  isStageComplete = false;
+  isCompleteFunctionRun = false;
 }
 
 var stageComplete = (function() {
-    var executed = false;
     return function() {
-        if (!executed) {
-            executed = true;
+        if (!isCompleteFunctionRun) {
+            isCompleteFunctionRun = true;
             playCompleteSound();
-            setTimeout(resetGame, 5000);
+            rugisStrobing = setInterval(function() {
+              rugStrobe();
+            }, 10);
+            setTimeout(function() {
+              clearInterval(rugisStrobing);
+              rugStrobeBlendCounter = 0;
+              rug.blendMode = PIXI.BLEND_MODES.NORMAL;
+              setTimeout(resetGame, 2000);
+            }, 2000)
         }
     };
 })();
@@ -345,8 +373,11 @@ app.ticker.add((delta) => {
 
 		for (var i = 0; i < dustArray.length; i++) {
 			dustArray[i].acceleration.set(dustArray[i].acceleration.x * 0.93, dustArray[i].acceleration.y * 0.93);
-		}
 
+      if (dustArray[i].y < (rug.position.y - 120) || dustArray[i].y > (rug.position.y + rug.height - 80)) {
+	       dustContainer.removeChild(dustArray[i]);
+	    }
+		}
 
     // If the mouse is off screen, then don't update any further
     if (app.screen.width > mouseCoords.x || mouseCoords.x > 0
@@ -404,9 +435,6 @@ app.ticker.add((delta) => {
         // check for end of stage
         if (dustContainer.children.length === 0) {
           isStageComplete = true;
-          setInterval(function() {
-            rugStrobe();
-          }, 10);
         }
 
         if (isStageComplete === false) {

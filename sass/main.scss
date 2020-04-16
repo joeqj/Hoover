@@ -30,11 +30,10 @@ p {
   pointer-events: none;
   font-size: 1.5rem;
   color: white;
-  line-height: 1.5;
+  line-height: 1.6;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
   display: block;
   text-align: center;
-  letter-spacing: -1px;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
    -khtml-user-select: none;
@@ -46,7 +45,7 @@ p {
 .heat {
   position: absolute;
   z-index: 999999;
-  width: 300px;
+  width: 250px;
   height: 30px;
   top: 1rem;
   left: 1rem;
@@ -64,5 +63,11 @@ p {
     left: 1rem;
     transform: translateY(-50%);
     font-size: 1rem;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
   }
 }

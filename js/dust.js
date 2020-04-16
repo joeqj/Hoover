@@ -6,6 +6,7 @@ dustContainer.position.x = (app.screen.width / 2) - (rug.width / 2);
 dustContainer.position.y = (app.screen.height / 2) - (rug.height / 2) + 5;
 
 function startDust() {
+	dustArray = [];
 	for (var i = 0; i < dustCount; i++) {
 		var sprite = new PIXI.Sprite.from('assets/dust.png');
 		sprite.width = 14;
