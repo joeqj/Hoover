@@ -27,7 +27,7 @@
   "dependencies": {
     "clean-css-cli": "^4.3.0",
     "concat": "^1.0.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "onchange": "^6.1.0",
     "pixi.js": "^5.2.1",
     "tone": "^13.8.25",
